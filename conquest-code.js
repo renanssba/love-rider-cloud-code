@@ -28,7 +28,7 @@ handlers.sendHighscore = function(args, context){
       
       var request = {
         PlayFabId: challengedPlayerId,
-        Data: {[stageName]: JSON.stringify(stageData)},
+        Data: {[stageName]: "STAGE DATA"},
         Permission: "Public"
       }
       var requestResult = server.UpdateUserData(request);
