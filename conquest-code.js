@@ -23,6 +23,7 @@ handlers.sendHighscore = function(args, context){
       
       return handlers.updateStageData( {
         playerId: currentPlayerId,
+        ownerPlayerId: challengedPlayerId,
         stageId: args.stageId,
         score: submittedScore,
         displayName: args.displayName
@@ -41,6 +42,7 @@ handlers.sendHighscore = function(args, context){
     // dominate territory
     return handlers.updateStageData( {
         playerId: currentPlayerId,
+        ownerPlayerId: challengedPlayerId,
         stageId: args.stageId,
         score: submittedScore,
         displayName: args.displayName
@@ -62,7 +64,7 @@ handlers.sendHighscore = function(args, context){
 
 handlers.updateStageData = function(args, context){
   
-  if(args == null || args.playerId == null ||
+  if(args == null || args.playerId == null || args.ownerPlayerId ||
      args.stageId == null || args.score == null || args.displayName == null){
     return {error: "INVALID_PARAMETERS"};
   }
@@ -80,7 +82,7 @@ handlers.updateStageData = function(args, context){
   requestData[stageName] = JSON.stringify(stageData);
   
   var request = {
-    PlayFabId: challengedPlayerId,
+    PlayFabId: args.ownerPlayerId,
     Data: requestData,
     Permission: "Public"
   }
