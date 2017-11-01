@@ -20,7 +20,7 @@ handlers.sendHighscore = function(args, context){
     if(currentPlayerId == challengedPlayerId){
       
       var stageData = {
-        id: 1
+        id: 1,
         highscore: submittedScore,
         ownerId: currentPlayerId,
         ownerDisplayName: args.displayName
