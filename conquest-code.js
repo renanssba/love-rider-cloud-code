@@ -17,7 +17,7 @@ handlers.sendHighscore = function(args, context){
   if(getUserDataResult.Data[stageName] == null){ // no stage data found for this id
     
     /// TODO: initialize the data when I own the region
-    if(currentPlayerId != challengedPlayerId){
+    if(currentPlayerId == challengedPlayerId){
       
       var stageData = {
         [stageName]: stageName,
@@ -27,6 +27,7 @@ handlers.sendHighscore = function(args, context){
       }
       
       var request = {
+        PlayFabId: challengedPlayerId,
         Data: stageData,
         Permission: Public
       }
