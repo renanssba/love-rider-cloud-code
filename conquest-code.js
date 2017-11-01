@@ -87,6 +87,6 @@ handlers.updateStageData = function(args, context){
     Permission: "Public"
   }
   var requestResult = server.UpdateUserData(request);
-  return {result: requestResult.status}
+  return {result: "OK"}
 }
 
