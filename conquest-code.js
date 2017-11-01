@@ -20,18 +20,17 @@ handlers.sendHighscore = function(args, context){
     if(currentPlayerId == challengedPlayerId){
       
       var stageData = {
-        id: 1,
         highscore: submittedScore,
         ownerId: currentPlayerId,
         ownerDisplayName: args.displayName
       }
       var requestData = {
-        stage1: stageData
+        [stageName]: stageData
       }
       
       var request = {
         PlayFabId: challengedPlayerId,
-        Data: {name: "RENAN"},
+        Data: requestData,
         Permission: "Public"
       }
       var requestResult = server.UpdateUserData(request);
