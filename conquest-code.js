@@ -12,17 +12,24 @@ handlers.sendHighscore = function(args, context){
   
   
   var challengedPlayerId = args.challengedPlayerId;
-  var challengedStageId = args.stageId;
+  var stageName = "stage".concat( args.stageId.toString() );
   var submittedScore = args.score;
   
   var request = {
     PlayFabId: currentPlayerId
   };
   var getUserDataResult = server.GetUserData(request);
-  log.debug(getUserDataResult.Data.regionName);
+  
+  if( getUserDataResult.Data[stageName] == null ){
+    return {error: "STAGE_NOT_INITIALIZED"};
+  } 
+  
+  var currentHighscore = getUserDataResult.Data[stageName].Value.highscore;
+  
   
   var response = {
-    regionName: getUserDataResult.Data.regionName
+    regionName: getUserDataResult.Data[stageName].Value,
+    highscore: currentHighscore
   }  
   return{message: response};
 }
