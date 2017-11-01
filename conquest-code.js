@@ -24,8 +24,8 @@ handlers.sendHighscore = function(args, context){
         highscore: submittedScore,
         ownerId: currentPlayerId,
         ownerDisplayName: args.displayName
-      }
-      var requestData;
+      };
+      var requestData = {};
       requestData[stageName] = "TESTE";//JSON.stringify(stageData);
       
       var request = {
