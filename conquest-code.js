@@ -10,7 +10,8 @@ handlers.sendHighscore = function(args, context){
   }
   
   var challengedPlayerId = args.challengedPlayerId;
-  var stageName = "stage".concat( args.stageId.toString() );
+  var stageName = "";
+  stageName.concat("stage", args.stageId.toString());
   var submittedScore = args.score;
   
   var getUserDataResult = server.GetUserData({ PlayFabId: challengedPlayerId });
