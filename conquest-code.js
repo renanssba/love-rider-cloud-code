@@ -7,7 +7,7 @@ handlers.sendHighscore = function(args, context){
   if(args == null || args.challengedPlayerId == null ||
      args.stageId == null || args.score == null || args.displayName == null){
     return {error: "INVALID_PARAMETERS"};
-  }  
+  }
   
   var challengedPlayerId = args.challengedPlayerId;
   var stageName = "stage".concat( args.stageId.toString() );
@@ -20,7 +20,6 @@ handlers.sendHighscore = function(args, context){
     if(currentPlayerId == challengedPlayerId){
       
       var stageData = {
-        [stageName]: stageName,
         highscore: submittedScore,
         ownerId: currentPlayerId,
         ownerDisplayName: args.displayName
@@ -28,8 +27,8 @@ handlers.sendHighscore = function(args, context){
       
       var request = {
         PlayFabId: challengedPlayerId,
-        Data: stageData,
-        Permission: Public
+        Data: {[stageName]: stageData},
+        Permission: "Public"
       }
       
       requestResult = server.UpdateUserData(request);
