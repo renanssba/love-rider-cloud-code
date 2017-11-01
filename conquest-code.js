@@ -6,7 +6,7 @@ handlers.sendHighscore = function(args, context){
   
   if(args == null || args.challengedPlayerId == null ||
      args.stageId == null || args.score == null || args.displayName == null){
-    return {error: "INVALID_PARAMETERS"};
+    return {result: "IGNORED", error: "INVALID_PARAMETERS"};
   }
   
   
@@ -30,14 +30,29 @@ handlers.sendHighscore = function(args, context){
       
     }else{
       // cant initialize this stage data
-      return {error: "STAGE_NOT_INITIALIZED"};
+      return {result: "IGNORED", error: "STAGE_NOT_INITIALIZED"};
     }
   }
   
   var currentHighscore = JSON.parse(getUserDataResult.Data[stageName].Value).highscore;
   
+  if(submittedScore > currentHighscore){
+    
+    // dominate territory
+    return handlers.updateStageData( {
+        playerId: currentPlayerId,
+        stageId: args.stageId,
+        score: submittedScore,
+        displayName: args.displayName
+    }, context);
+    
+  }else{
+    return {result: "IGNORED", error: "SCORE_NOT_BIG_ENOUGH"};
+  }
+  
+  
   var response = {
-    //regionName: getUserDataResult.Data.regionName.Value,
+    regionName: getUserDataResult.Data.regionName.Value,
     highscore: currentHighscore
   };
   return {message: response};
