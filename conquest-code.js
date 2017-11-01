@@ -24,10 +24,13 @@ handlers.sendHighscore = function(args, context){
         ownerId: currentPlayerId,
         ownerDisplayName: args.displayName
       }
+      var requestData = {
+        stage1: stageData
+      }
       
       var request = {
         PlayFabId: challengedPlayerId,
-        Data: {[stageName]: stageData},
+        Data: requestData,
         Permission: "Public"
       }
       
