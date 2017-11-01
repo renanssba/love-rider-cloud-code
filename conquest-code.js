@@ -31,11 +31,10 @@ handlers.sendHighscore = function(args, context){
       
       var request = {
         PlayFabId: challengedPlayerId,
-        Data: requestData,
+        Data: {name: "RENAN"},
         Permission: "Public"
       }
-      
-      requestResult = server.UpdateUserData(request);
+      var requestResult = server.UpdateUserData(request);
       return {result: "SUCCESS"}
       
     }else{
@@ -46,7 +45,7 @@ handlers.sendHighscore = function(args, context){
   var currentHighscore = getUserDataResult.Data[stageName].Value.highscore;
   
   var response = {
-    regionName: getUserDataResult.Data.regionName.Value,
+    //regionName: getUserDataResult.Data.regionName.Value,
     highscore: currentHighscore
   };
   return{message: response};
