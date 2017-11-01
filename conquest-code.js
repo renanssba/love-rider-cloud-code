@@ -26,7 +26,7 @@ handlers.sendHighscore = function(args, context){
         ownerDisplayName: args.displayName
       };
       var requestData = {};
-      requestData[stageName] = "TESTE";//JSON.stringify(stageData);
+      requestData[stageName] = JSON.stringify(stageData);
       
       var request = {
         PlayFabId: challengedPlayerId,
