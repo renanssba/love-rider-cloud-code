@@ -77,6 +77,12 @@ handlers.updateStageData = function(args, context){
   var stageName = "stage";
   stageName = stageName.concat(args.stageId.toString());
 
+  // ADD SCORE TO CONQUEST MODE LEADERBOARD
+  server.UpdatePlayerStatistics({Statistics: {
+    StatisticName: "Conquest Mode",
+    Value: 100
+  }});
+
   var stageData = {
     seed: args.seed,
     highscore: args.score,
