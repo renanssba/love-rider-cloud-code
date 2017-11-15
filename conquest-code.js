@@ -19,7 +19,7 @@ handlers.sendHighscore = function(args, context){
 
     if(currentPlayerId == challengedPlayerId){
       // initialize this stage data
-
+      handlers.addScoreToConquestMode({playerId: currentPlayerId, score: 100}, context);
       return handlers.updateStageData( {
         playerId: currentPlayerId,
         ownerPlayerId: challengedPlayerId,
@@ -37,6 +37,7 @@ handlers.sendHighscore = function(args, context){
 
   var currentHighscore = JSON.parse(getUserDataResult.Data[stageName].Value).highscore;
   var currentSeed = JSON.parse(getUserDataResult.Data[stageName].Value).seed;
+  var currentOwnerOfStage = JSON.parse(getUserDataResult.Data[stageName].Value).ownerId;
 
   if(args.seed != currentSeed){
     return {result: "IGNORED", error: "INVALID_SEED"};
@@ -44,6 +45,11 @@ handlers.sendHighscore = function(args, context){
 
   if(submittedScore > currentHighscore){
     // dominate territory
+    if(currentOwnerOfStage != currentPlayerId){
+      handlers.addScoreToConquestMode({playerId: currentPlayerId, score: 100}, context);
+      handlers.addScoreToConquestMode({playerId: currentOwnerOfStage, score: -100}, context);
+    }
+
     return handlers.updateStageData( {
         playerId: currentPlayerId,
         ownerPlayerId: challengedPlayerId,
@@ -73,17 +79,8 @@ handlers.updateStageData = function(args, context){
     return {error: "INVALID_PARAMETERS"};
   }
 
-
   var stageName = "stage";
   stageName = stageName.concat(args.stageId.toString());
-
-  // ADD SCORE TO CONQUEST MODE LEADERBOARD
-  server.UpdatePlayerStatistics({
-    PlayFabId: args.playerId,
-    Statistics: [{
-      StatisticName: "Conquest Mode",
-      Value: 100
-    }]});
 
   var stageData = {
     seed: args.seed,
@@ -100,5 +97,23 @@ handlers.updateStageData = function(args, context){
     Permission: "Public"
   }
   var requestResult = server.UpdateUserData(request);
-  return {result: "OK"}
+  return requestResult;
+}
+
+
+
+handlers.addScoreToConquestMode = function(args, context){
+
+  if(args == null || args.playerId == null || args.score == null){
+    return {error: "INVALID_PARAMETERS"};
+  }
+
+  var requestResult = server.UpdatePlayerStatistics({
+    PlayFabId: args.playerId,
+    Statistics: [{
+      StatisticName: "Conquest Mode",
+      Value: args.score
+  }]});
+
+  return requestResult;
 }
