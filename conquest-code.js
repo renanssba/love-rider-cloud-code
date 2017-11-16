@@ -5,7 +5,7 @@
 handlers.sendHighscore = function(args, context){
 
   if(args == null || args.challengedPlayerId == null || args.seed == null ||
-     args.stageId == null || args.score == null || args.displayName == null){
+     args.stageId == null || args.score == null){
     return {result: "IGNORED", error: "INVALID_PARAMETERS"};
   }
 
@@ -25,8 +25,7 @@ handlers.sendHighscore = function(args, context){
         ownerPlayerId: challengedPlayerId,
         stageId: args.stageId,
         seed: args.seed,
-        score: submittedScore,
-        displayName: args.displayName
+        score: submittedScore
       }, context);
 
     }else{
@@ -38,6 +37,7 @@ handlers.sendHighscore = function(args, context){
   var currentHighscore = JSON.parse(getUserDataResult.Data[stageName].Value).highscore;
   var currentSeed = JSON.parse(getUserDataResult.Data[stageName].Value).seed;
   var currentOwnerOfStage = JSON.parse(getUserDataResult.Data[stageName].Value).ownerId;
+//  var currentOwnerName = JSON.parse(getUserDataResult.Data[stageName].Value).ownerDisplayName;
 
   if(args.seed != currentSeed){
     return {result: "IGNORED", error: "INVALID_SEED"};
@@ -50,13 +50,20 @@ handlers.sendHighscore = function(args, context){
       handlers.addScoreToConquestMode({playerId: currentOwnerOfStage, score: -100}, context);
     }
 
+/*    server.SendPushNotification({
+      Recipient: targetId,
+      Subject: "Você foi desafiado",
+      Package: {
+        Message: "${currentOwnerName} conquistou seu território! Duele para recuperá-lo!",
+      }
+    });*/
+
     return handlers.updateStageData( {
         playerId: currentPlayerId,
         ownerPlayerId: challengedPlayerId,
         stageId: args.stageId,
         seed: args.seed,
-        score: submittedScore,
-        displayName: args.displayName
+        score: submittedScore
     }, context);
   }else{
     return {result: "IGNORED", error: "SCORE_NOT_BIG_ENOUGH"};
@@ -75,7 +82,7 @@ handlers.sendHighscore = function(args, context){
 handlers.updateStageData = function(args, context){
 
   if(args == null || args.playerId == null || args.ownerPlayerId == null || args.seed == null ||
-     args.stageId == null || args.score == null || args.displayName == null){
+     args.stageId == null || args.score == null){
     return {error: "INVALID_PARAMETERS"};
   }
 
@@ -85,8 +92,7 @@ handlers.updateStageData = function(args, context){
   var stageData = {
     seed: args.seed,
     highscore: args.score,
-    ownerId: args.playerId,
-    ownerDisplayName: args.displayName
+    ownerId: args.playerId
   };
   var requestData = {};
   requestData[stageName] = JSON.stringify(stageData);
@@ -118,6 +124,7 @@ handlers.addScoreToConquestMode = function(args, context){
   return requestResult;
 }
 
+
 handlers.getConquestTargets = function(args, context){
   var response = server.GetLeaderboardAroundUser({
     PlayFabId: currentPlayerId,
@@ -133,8 +140,6 @@ handlers.getConquestTargets = function(args, context){
     }
   }
   response.Leaderboard.splice(playerIndex, 1);
-
-  response.playerIndex = playerIndex;
 
   return response;
 }
