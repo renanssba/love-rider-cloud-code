@@ -119,7 +119,8 @@ handlers.addScoreToConquestMode = function(args, context){
 }
 
 handlers.getConquestTargets = function(args, context){
-  return server.GetLeaderboardAroundPlayer({
+  return server.GetLeaderboardAroundUser({
+    PlayFabId: currentPlayerId,
     StatisticName: "Conquest Mode",
     MaxResultsCount: 5
   });
