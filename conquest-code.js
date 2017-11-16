@@ -146,7 +146,7 @@ handlers.getConquestTargets = function(args, context){
 
 
 handlers.getConquestDataForPlayer = function(args, context){
-  if(args == null || args.PlayFabId == null){
+  if(args == null || args.PlayFabId == null || args.DisplayName == null){
     return {error: "INVALID_PARAMETERS"};
   }
 
@@ -155,10 +155,13 @@ handlers.getConquestDataForPlayer = function(args, context){
   });
 
   /// Set displayName for stage0
-  if(JSON.parse(response.Data.stage0.Value).ownerId == currentPlayerId){
-    JSON.parse(response.Data.stage0.Value).ownerDisplayName = "DONO";
+  var newStageData = JSON.parse(response.Data.stage0.Value);
+  if(newStageData.ownerId == args.PlayFabId){
+    newStageData.ownerDisplayName = args.DisplayName;
+    response.Data.stage0.Value = JSON.stringify(newStageData);
   }else {
-    JSON.parse(response.Data.stage0.Value).ownerDisplayName = "INVASOR";
+    newStageData.ownerDisplayName = "INVASOR";
+    response.Data.stage0.Value = JSON.stringify(newStageData);
   }
 
   return response;
