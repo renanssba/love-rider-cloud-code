@@ -155,13 +155,19 @@ handlers.getConquestDataForPlayer = function(args, context){
   });
 
   /// Set displayName for stage0
-  var newStageData = JSON.parse(response.Data.stage0.Value);
-  if(newStageData.ownerId == args.PlayFabId){
-    newStageData.ownerDisplayName = args.DisplayName;
-    response.Data.stage0.Value = JSON.stringify(newStageData);
-  }else {
-    newStageData.ownerDisplayName = "INVASOR";
-    response.Data.stage0.Value = JSON.stringify(newStageData);
+  for(i=0; i<5; i++){
+    var stageName = "stage";
+    stageName = stageName.concat(i.toString());
+    if(response.Data[stageName] != null){
+      var newStageData = JSON.parse(response.Data.stage0.Value);
+      if(newStageData.ownerId == args.PlayFabId){
+        newStageData.ownerDisplayName = args.DisplayName;
+        response.Data.stage0.Value = JSON.stringify(newStageData);
+      }else {
+        newStageData.ownerDisplayName = "INVASOR";
+        response.Data.stage0.Value = JSON.stringify(newStageData);
+      }
+    }
   }
 
   return response;
