@@ -118,7 +118,7 @@ handlers.addScoreToConquestMode = function(args, context){
   return requestResult;
 }
 
-handlers.getConquestTargets(){
+handlers.getConquestTargets = function(args, context){
   return server.GetLeaderboardAroundPlayer({
     StatisticName: "Conquest Mode",
     MaxResultsCount: 5
