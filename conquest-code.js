@@ -164,7 +164,7 @@ handlers.getConquestDataForPlayer = function(args, context){
         newStageData.ownerDisplayName = args.DisplayName;
         response.Data[stageName].Value = JSON.stringify(newStageData);
       }else {
-        newStageData.ownerDisplayName = server.GetPlayerProfile({PlayFabId: newStageData.ownerId}).data.PlayerProfile.DisplayName;
+        newStageData.ownerDisplayName = server.GetPlayerProfile({PlayFabId: newStageData.ownerId}).PlayerProfile.DisplayName;
         response.Data[stageName].Value = JSON.stringify(newStageData);
       }
     }
