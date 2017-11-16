@@ -125,28 +125,6 @@ handlers.addScoreToConquestMode = function(args, context){
 }
 
 
-handlers.getConquestDataForPlayer = function(args, context){
-  if(args == null || args.PlayFabId == null){
-    return {error: "INVALID_PARAMETERS"};
-  }
-
-  var response = server.GetUserData({
-    PlayFabId: args.PlayFabId
-  });
-
-  // var i, playerIndex;
-  // for(i=0; i<response.Leaderboard.length; i++){
-  //   if(response.Leaderboard[i].PlayFabId == currentPlayerId){
-  //     playerIndex = i;
-  //     break;
-  //   }
-  // }
-  // response.Leaderboard.splice(playerIndex, 1);
-
-  return response;
-}
-
-
 handlers.getConquestTargets = function(args, context){
   var response = server.GetLeaderboardAroundUser({
     PlayFabId: currentPlayerId,
@@ -162,6 +140,26 @@ handlers.getConquestTargets = function(args, context){
     }
   }
   response.Leaderboard.splice(playerIndex, 1);
+
+  return response;
+}
+
+
+handlers.getConquestDataForPlayer = function(args, context){
+  if(args == null || args.PlayFabId == null){
+    return {error: "INVALID_PARAMETERS"};
+  }
+
+  var response = server.GetUserData({
+    PlayFabId: args.PlayFabId
+  });
+
+  /// Set displayName for stage0
+  if(JSON.parse(response.Data.stage0.Value).ownerId == currentPlayerId){
+    JSON.parse(response.Data.stage0.Value).ownerDisplayName = "DONO";
+  }else {
+    JSON.parse(response.Data.stage0.Value).ownerDisplayName = "INVASOR";
+  }
 
   return response;
 }
