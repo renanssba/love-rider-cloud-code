@@ -92,7 +92,8 @@ handlers.updateStageData = function(args, context){
   var stageData = {
     seed: args.seed,
     highscore: args.score,
-    ownerId: args.playerId
+    ownerId: args.playerId,
+    lastUpdated: new Date()
   };
   var requestData = {};
   requestData[stageName] = JSON.stringify(stageData);
