@@ -45,9 +45,14 @@ handlers.sendHighscore = function(args, context){
 
   if(submittedScore > currentHighscore){
     // dominate territory
+    var contestantId;
+
     if(currentOwnerOfStage != currentPlayerId){
       handlers.addScoreToConquestMode({playerId: currentPlayerId, score: 100}, context);
       handlers.addScoreToConquestMode({playerId: currentOwnerOfStage, score: -100}, context);
+      contestantId = challengedPlayerId;
+    }else{
+      contestantId = JSON.parse(getUserDataResult.Data[stageName].Value).contestantId;
     }
 
 /*    server.SendPushNotification({
@@ -58,12 +63,14 @@ handlers.sendHighscore = function(args, context){
       }
     });*/
 
+
     return handlers.updateStageData( {
         playerId: currentPlayerId,
         ownerPlayerId: challengedPlayerId,
         stageId: args.stageId,
         seed: args.seed,
         score: submittedScore,
+        contestantId: contestantId,
         lastUpdated: new Date()
     }, context);
   }else{
@@ -97,6 +104,9 @@ handlers.updateStageData = function(args, context){
   };
   if(args.lastUpdated != null){
     stageData.lastUpdated = args.lastUpdated;
+  }
+  if(args.contestantId != null){
+    stageData.contestantId = args.contestantId;
   }
 
   var requestData = {};
