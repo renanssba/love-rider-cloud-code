@@ -63,7 +63,8 @@ handlers.sendHighscore = function(args, context){
         ownerPlayerId: challengedPlayerId,
         stageId: args.stageId,
         seed: args.seed,
-        score: submittedScore
+        score: submittedScore,
+        lastUpdated: new Date()
     }, context);
   }else{
     return {result: "IGNORED", error: "SCORE_NOT_BIG_ENOUGH"};
@@ -92,9 +93,12 @@ handlers.updateStageData = function(args, context){
   var stageData = {
     seed: args.seed,
     highscore: args.score,
-    ownerId: args.playerId,
-    lastUpdated: new Date()
+    ownerId: args.playerId
   };
+  if(args.lastUpdated != null){
+    stageData.lastUpdated = args.lastUpdated;
+  }
+
   var requestData = {};
   requestData[stageName] = JSON.stringify(stageData);
 
