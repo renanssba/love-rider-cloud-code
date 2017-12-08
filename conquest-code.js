@@ -185,15 +185,18 @@ handlers.getConquestDataForPlayer = function(args, context){
       if(newStageData.lastDominated != null){
         var passed_time = Date.hoursBetween(new Date(newStageData.lastDominated), new Date());
         if(passed_time >= 24){
-          newStageData.Resolve = handlers.resolveDispute({
-             PlayFabId: args.PlayFabId,
-             stageId: i,
-             stageData: newStageData,
-             stageName: stageName
-           }, context);
-        }
-        else {
-          response.Data[stageName].Resolve = "passed hours: ".concat(passed_time.toString());
+          // TO TEST CLIENT TREATMENT 
+          newStageData.Resolve = {
+            status: "resolved",
+            winner: newStageData.ownerId
+          };
+
+          // newStageData.Resolve = handlers.resolveDispute({
+          //    PlayFabId: args.PlayFabId,
+          //    stageId: i,
+          //    stageData: newStageData,
+          //    stageName: stageName
+          //  }, context);
         }
       }
 
@@ -229,6 +232,7 @@ handlers.resolveDispute = function(args, context){
       seed: args.seed,
       score: submittedScore
     }, context);
+    // resets all dispute data, instantiates clean stage
   } else {
     handlers.addScoreToConquestMode({playerId: args.stageData.ownerId, score: 100}, context);
     // Add one Invader Token item
