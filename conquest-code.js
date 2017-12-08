@@ -71,7 +71,7 @@ handlers.sendHighscore = function(args, context){
         seed: args.seed,
         score: submittedScore,
         contestantId: contestantId,
-        lastUpdated: new Date()
+        lastDominated: new Date()
     }, context);
   }else{
     return {result: "IGNORED", error: "SCORE_NOT_BIG_ENOUGH"};
@@ -102,8 +102,8 @@ handlers.updateStageData = function(args, context){
     highscore: args.score,
     ownerId: args.playerId
   };
-  if(args.lastUpdated != null){
-    stageData.lastUpdated = args.lastUpdated;
+  if(args.lastDominated != null){
+    stageData.lastDominated = args.lastDominated;
   }
   if(args.contestantId != null){
     stageData.contestantId = args.contestantId;
@@ -177,16 +177,15 @@ handlers.getConquestDataForPlayer = function(args, context){
       var newStageData = JSON.parse(response.Data[stageName].Value);
       if(newStageData.ownerId == args.PlayFabId){
         newStageData.ownerDisplayName = args.DisplayName;
-        response.Data[stageName].Value = JSON.stringify(newStageData);
       } else {
         newStageData.ownerDisplayName = server.GetPlayerProfile({PlayFabId: newStageData.ownerId}).PlayerProfile.DisplayName;
-        response.Data[stageName].Value = JSON.stringify(newStageData);
       }
 
-      if(newStageData.lastUpdated != null){
-        var passed_time = Date.hoursBetween(new Date(newStageData.lastUpdated), new Date());
+      // Check if dispute is over and resolve it
+      if(newStageData.lastDominated != null){
+        var passed_time = Date.hoursBetween(new Date(newStageData.lastDominated), new Date());
         if(passed_time >= 24){
-          response.Data[stageName].Value.Resolve = handlers.resolveDispute({
+          newStageData.Resolve = handlers.resolveDispute({
              PlayFabId: args.PlayFabId,
              stageId: i,
              stageData: newStageData,
@@ -197,6 +196,8 @@ handlers.getConquestDataForPlayer = function(args, context){
           response.Data[stageName].Resolve = "passed hours: ".concat(passed_time.toString());
         }
       }
+
+      response.Data[stageName].Value = JSON.stringify(newStageData);
     }
   }
 
