@@ -186,14 +186,14 @@ handlers.getConquestDataForPlayer = function(args, context){
         var passed_time = Date.hoursBetween(new Date(newStageData.lastDominated), new Date());
         if(passed_time >= 24){
           // TO TEST CLIENT TREATMENT
-          newStageData.Resolve = newStageData.ownerId;
+          // newStageData.Resolve = newStageData.ownerId;
 
-          // newStageData.Resolve = handlers.resolveDispute({
-          //    PlayFabId: args.PlayFabId,
-          //    stageId: i,
-          //    stageData: newStageData,
-          //    stageName: stageName
-          //  }, context);
+          newStageData.Resolve = handlers.resolveDispute({
+             PlayFabId: args.PlayFabId,
+             stageId: i,
+             stageData: newStageData,
+             stageName: stageName
+           }, context);
         }
       }
 
