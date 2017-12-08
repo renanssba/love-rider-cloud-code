@@ -186,17 +186,16 @@ handlers.getConquestDataForPlayer = function(args, context){
       if(newStageData.lastUpdated != null){
         var passed_time = Date.hoursBetween(new Date(newStageData.lastUpdated), new Date());
         if(passed_time >= 24){
-          response.Data[stageName].Resolve =
-           handlers.resolveDispute({
+          response.Data[stageName].Value.Resolve = handlers.resolveDispute({
              PlayFabId: args.PlayFabId,
              stageId: i,
              stageData: newStageData,
              stageName: stageName
            }, context);
         }
-        // else {
-        //   response.Data[stageName].Status = "passed hours: ".concat(passed_time.toString());
-        // }
+        else {
+          response.Data[stageName].Resolve = "passed hours: ".concat(passed_time.toString());
+        }
       }
     }
   }
