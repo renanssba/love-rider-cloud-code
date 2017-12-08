@@ -184,8 +184,11 @@ handlers.getConquestDataForPlayer = function(args, context){
       }
 
       if(newStageData.lastUpdated != null){
-        if(Date.hoursBetween(newStageData.lastUpdated, new Date()) >= 24){
+        var passed_time = Date.hoursBetween(new Date(newStageData.lastUpdated), new Date());
+        if(passed_time >= 24){
           response.Data[stageName].Status = "expired";
+        }else {
+          response.Data[stageName].Status = "passed hours: ".concat(passed_time.toString());
         }
       }
     }
