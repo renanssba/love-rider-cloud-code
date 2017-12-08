@@ -215,7 +215,7 @@ handlers.resolveDispute = function(args, context){
   var response = {
     status: "resolved",
     winner: args.stageData.ownerId
-  });
+  };
 
 
   if(args.stageData.ownerId == originalOwnerId){
