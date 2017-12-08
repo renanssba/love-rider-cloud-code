@@ -48,7 +48,7 @@ handlers.sendHighscore = function(args, context){
     var contestantId;
 
     if(currentOwnerOfStage != currentPlayerId){
-      handlers.addScoreToConquestMode({playerId: currentPlayerId, score: 100}, context);
+      handlers.addScoreToConquestMode({playerId: currentPlayerId, score: 110}, context);
       handlers.addScoreToConquestMode({playerId: currentOwnerOfStage, score: -100}, context);
       contestantId = challengedPlayerId;
     }else{
@@ -181,6 +181,12 @@ handlers.getConquestDataForPlayer = function(args, context){
       }else {
         newStageData.ownerDisplayName = server.GetPlayerProfile({PlayFabId: newStageData.ownerId}).PlayerProfile.DisplayName;
         response.Data[stageName].Value = JSON.stringify(newStageData);
+      }
+
+      if(newStageData.lastUpdated != null){
+        if(Date.hoursBetween(newStageData.lastUpdated, new Date()) >= 24){
+          response.Data[stageName].Status = "expired";
+        }
       }
     }
   }
