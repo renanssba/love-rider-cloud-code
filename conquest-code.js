@@ -185,11 +185,8 @@ handlers.getConquestDataForPlayer = function(args, context){
       if(newStageData.lastDominated != null){
         var passed_time = Date.hoursBetween(new Date(newStageData.lastDominated), new Date());
         if(passed_time >= 24){
-          // TO TEST CLIENT TREATMENT 
-          newStageData.Resolve = {
-            status: "resolved",
-            winner: newStageData.ownerId
-          };
+          // TO TEST CLIENT TREATMENT
+          newStageData.Resolve = newStageData.ownerId;
 
           // newStageData.Resolve = handlers.resolveDispute({
           //    PlayFabId: args.PlayFabId,
@@ -215,13 +212,6 @@ handlers.resolveDispute = function(args, context){
   }
   var originalOwnerId = args.PlayFabId;
 
-
-  var response = {
-    status: "resolved",
-    winner: args.stageData.ownerId
-  };
-
-
   if(args.stageData.ownerId == originalOwnerId){
     handlers.addScoreToConquestMode({playerId: args.stageData.ownerId, score: 20}, context);
     // Add one Defender Token item
@@ -244,5 +234,5 @@ handlers.resolveDispute = function(args, context){
     // cleans the stage itself
   }
 
-  return response;
+  return args.stageData.ownerId;
 }
