@@ -178,7 +178,7 @@ handlers.getConquestDataForPlayer = function(args, context){
       if(newStageData.ownerId == args.PlayFabId){
         newStageData.ownerDisplayName = args.DisplayName;
         response.Data[stageName].Value = JSON.stringify(newStageData);
-      }else {
+      } else {
         newStageData.ownerDisplayName = server.GetPlayerProfile({PlayFabId: newStageData.ownerId}).PlayerProfile.DisplayName;
         response.Data[stageName].Value = JSON.stringify(newStageData);
       }
@@ -186,12 +186,58 @@ handlers.getConquestDataForPlayer = function(args, context){
       if(newStageData.lastUpdated != null){
         var passed_time = Date.hoursBetween(new Date(newStageData.lastUpdated), new Date());
         if(passed_time >= 24){
-          response.Data[stageName].Status = "expired";
-        }else {
-          response.Data[stageName].Status = "passed hours: ".concat(passed_time.toString());
+          response.Data[stageName].Resolve =
+           handlers.resolveDispute({
+             PlayFabId: args.PlayFabId,
+             stageId: i,
+             stageData: newStageData,
+             stageName: stageName
+           }, context);
         }
+        // else {
+        //   response.Data[stageName].Status = "passed hours: ".concat(passed_time.toString());
+        // }
       }
     }
+  }
+
+  return response;
+}
+
+
+handlers.resolveDispute = function(args, context){
+  if(args == null || args.PlayFabId == null || args.stageId == null ||
+     args.stageData == null || args.stageName == null){
+    return {error: "INVALID_PARAMETERS"};
+  }
+  var originalOwnerId = args.PlayFabId;
+
+
+  var response = {
+    status: "resolved",
+    winner: args.stageData.ownerId
+  });
+
+
+  if(args.stageData.ownerId == originalOwnerId){
+    handlers.addScoreToConquestMode({playerId: args.stageData.ownerId, score: 20}, context);
+    // Add one Defender Token item
+    return handlers.updateStageData( {
+      playerId: args.PlayFabId,
+      ownerPlayerId: challengedPlayerId,
+      stageId: args.stageId,
+      seed: args.seed,
+      score: submittedScore
+    }, context);
+  } else {
+    handlers.addScoreToConquestMode({playerId: args.stageData.ownerId, score: 100}, context);
+    // Add one Invader Token item
+    server.UpdateUserData({
+      PlayFabId: args.PlayFabId,
+      KeysToRemove: new Array(args.stageName),
+      Permission: "Public"
+    });
+    // cleans the stage itself
   }
 
   return response;
