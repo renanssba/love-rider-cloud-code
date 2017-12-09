@@ -236,7 +236,7 @@ handlers.resolveDispute = function(args, context){
     var stageData = {
       seed: args.stageData.seed,
       highscore: 0,
-      ownerId: args.playerId
+      ownerId: args.PlayFabId
     };
 
     var requestData = {};
