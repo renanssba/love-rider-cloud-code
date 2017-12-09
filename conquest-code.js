@@ -194,6 +194,9 @@ handlers.getConquestDataForPlayer = function(args, context){
       } else {
         newStageData.ownerDisplayName = server.GetPlayerProfile({PlayFabId: newStageData.ownerId}).PlayerProfile.DisplayName;
       }
+      if(newStageData.contestantId != null){
+        newStageData.contestantDisplayName = server.GetPlayerProfile({PlayFabId: newStageData.contestantId}).PlayerProfile.DisplayName;
+      }
 
       // Check if dispute is over and resolve it
       if(newStageData.lastDominated != null){
