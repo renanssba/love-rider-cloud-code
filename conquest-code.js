@@ -240,7 +240,7 @@ handlers.resolveDispute = function(args, context){
     };
 
     var requestData = {};
-    requestData[stageName] = JSON.stringify(stageData);
+    requestData[args.stageName] = JSON.stringify(stageData);
 
     server.UpdateUserData({
       PlayFabId: originalOwnerId,
