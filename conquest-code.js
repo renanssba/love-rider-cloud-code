@@ -246,7 +246,7 @@ handlers.resolveDispute = function(args, context){
       PlayFabId: originalOwnerId,
       Data: requestData,
       Permission: "Public"
-    }
+    });
     // resets all dispute data, instantiates clean stage
   } else {
     handlers.addScoreToConquestMode({playerId: args.stageData.ownerId, score: 100}, context);
