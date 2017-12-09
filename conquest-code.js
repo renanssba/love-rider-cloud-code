@@ -15,7 +15,9 @@ handlers.sendHighscore = function(args, context){
   var submittedScore = args.score;
 
   var getUserDataResult = server.GetUserData({ PlayFabId: challengedPlayerId });
-  if(getUserDataResult.Data[stageName] == null){ // no stage data found for this id
+
+  // no stage data found for this id
+  if(getUserDataResult.Data[stageName] == null){
 
     if(currentPlayerId == challengedPlayerId){
       // initialize this stage data
@@ -42,17 +44,40 @@ handlers.sendHighscore = function(args, context){
   if(args.seed != currentSeed){
     return {result: "IGNORED", error: "INVALID_SEED"};
   }
+  if(currentOwnerOfStage == currentPlayerId){
+    return {result: "IGNORED", error: "ALREADY_OWNS_STAGE"};
+  }
+
 
   if(submittedScore > currentHighscore){
     // dominate territory
     var contestantId;
 
-    if(currentOwnerOfStage != currentPlayerId){
-      handlers.addScoreToConquestMode({playerId: currentPlayerId, score: 110}, context);
-      handlers.addScoreToConquestMode({playerId: currentOwnerOfStage, score: -100}, context);
-      contestantId = challengedPlayerId;
+    handlers.addScoreToConquestMode({playerId: currentPlayerId, score: 110}, context);
+    handlers.addScoreToConquestMode({playerId: currentOwnerOfStage, score: -100}, context);
+
+    if(currentPlayerId == challengedPlayerId){
+      contestantId = JSON.parse(getUserDataResult.Data[stageName].Value).ownerId;
+
+      return handlers.updateStageData( {
+          playerId: currentPlayerId,
+          ownerPlayerId: challengedPlayerId,
+          stageId: args.stageId,
+          seed: args.seed,
+          score: submittedScore,
+          contestantId: contestantId,
+          lastDominated: new Date()
+      }, context);
     }else{
-      contestantId = JSON.parse(getUserDataResult.Data[stageName].Value).contestantId;
+      return handlers.updateStageData( {
+          playerId: currentPlayerId,
+          ownerPlayerId: challengedPlayerId,
+          stageId: args.stageId,
+          seed: args.seed,
+          score: submittedScore,
+          contestantId: challengedPlayerId,
+          lastDominated: new Date()
+      }, context);
     }
 
 /*    server.SendPushNotification({
@@ -62,17 +87,6 @@ handlers.sendHighscore = function(args, context){
         Message: "${currentOwnerName} conquistou seu território! Duele para recuperá-lo!",
       }
     });*/
-
-
-    return handlers.updateStageData( {
-        playerId: currentPlayerId,
-        ownerPlayerId: challengedPlayerId,
-        stageId: args.stageId,
-        seed: args.seed,
-        score: submittedScore,
-        contestantId: contestantId,
-        lastDominated: new Date()
-    }, context);
   }else{
     return {result: "IGNORED", error: "SCORE_NOT_BIG_ENOUGH"};
   }
