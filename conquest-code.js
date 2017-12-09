@@ -232,13 +232,21 @@ handlers.resolveDispute = function(args, context){
   if(args.stageData.ownerId == originalOwnerId){
     handlers.addScoreToConquestMode({playerId: args.stageData.ownerId, score: 20}, context);
     // Add one Defender Token item
-    return handlers.updateStageData( {
-      playerId: args.PlayFabId,
-      ownerPlayerId: args.stageData.ownerId,
-      stageId: args.stageId,
-      seed: args.seed,
-      score: 0
-    }, context);
+
+    var stageData = {
+      seed: args.stageData.seed,
+      highscore: 0,
+      ownerId: args.playerId
+    };
+
+    var requestData = {};
+    requestData[stageName] = JSON.stringify(stageData);
+
+    server.UpdateUserData({
+      PlayFabId: originalOwnerId,
+      Data: requestData,
+      Permission: "Public"
+    }
     // resets all dispute data, instantiates clean stage
   } else {
     handlers.addScoreToConquestMode({playerId: args.stageData.ownerId, score: 100}, context);
