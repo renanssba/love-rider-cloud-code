@@ -183,8 +183,8 @@ handlers.getConquestDataForPlayer = function(args, context){
 
       // Check if dispute is over and resolve it
       if(newStageData.lastDominated != null){
-        var passed_time = Date.hoursBetween(new Date(newStageData.lastDominated), new Date());
-        if(passed_time >= 24){
+        var passed_hours = Date.hoursBetween(new Date(newStageData.lastDominated), new Date());
+        if(passed_hours >= 2){
           // TO TEST CLIENT TREATMENT
           // newStageData.Resolve = newStageData.ownerId;
 
