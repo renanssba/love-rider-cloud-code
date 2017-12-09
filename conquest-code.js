@@ -237,7 +237,7 @@ handlers.resolveDispute = function(args, context){
       ownerPlayerId: args.stageData.ownerId,
       stageId: args.stageId,
       seed: args.seed,
-      score: submittedScore
+      score: 0
     }, context);
     // resets all dispute data, instantiates clean stage
   } else {
