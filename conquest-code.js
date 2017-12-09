@@ -234,7 +234,7 @@ handlers.resolveDispute = function(args, context){
     // Add one Defender Token item
     return handlers.updateStageData( {
       playerId: args.PlayFabId,
-      ownerPlayerId: challengedPlayerId,
+      ownerPlayerId: args.stageData.ownerId,
       stageId: args.stageId,
       seed: args.seed,
       score: submittedScore
