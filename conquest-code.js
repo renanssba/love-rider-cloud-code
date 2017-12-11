@@ -230,7 +230,7 @@ handlers.resolveDispute = function(args, context){
   var originalOwnerId = args.PlayFabId;
 
   if(args.stageData.ownerId == originalOwnerId){
-    handlers.addScoreToConquestMode({playerId: args.stageData.ownerId, score: 20}, context);
+    handlers.addScoreToConquestMode({playerId: args.stageData.ownerId, score: 30}, context);
     // Add one Defender Token item
 
     var stageData = {
@@ -249,7 +249,7 @@ handlers.resolveDispute = function(args, context){
     });
     // resets all dispute data, instantiates clean stage
   } else {
-    handlers.addScoreToConquestMode({playerId: args.stageData.ownerId, score: 100}, context);
+    // handlers.addScoreToConquestMode({playerId: args.stageData.ownerId, score: 100}, context);
     // Add one Invader Token item
     server.UpdateUserData({
       PlayFabId: args.PlayFabId,
