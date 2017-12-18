@@ -179,6 +179,9 @@ handlers.getConquestDataForPlayer = function(args, context){
     return {error: "INVALID_PARAMETERS"};
   }
 
+  // resolve any expired disputes (if applicable)
+  handlers.resolveExpiredDisputes({PlayFabId: args.PlayFabId});
+
   var response = server.GetUserData({
     PlayFabId: args.PlayFabId
   });
@@ -197,14 +200,37 @@ handlers.getConquestDataForPlayer = function(args, context){
       if(newStageData.contestantId != null){
         newStageData.contestantDisplayName = server.GetPlayerProfile({PlayFabId: newStageData.contestantId}).PlayerProfile.DisplayName;
       }
+      response.Data[stageName].Value = JSON.stringify(newStageData);
+    }
+  }
 
+  return response;
+}
+
+
+handlers.resolveExpiredDisputes() = function(args, context){
+  var response;
+
+  if(args == null || args.PlayFabId == null){
+    response = server.GetUserData({
+      PlayFabId: args.PlayFabId
+    });
+  }else{
+    response = server.GetUserData({
+      PlayFabId: currentPlayerId
+    });
+  }
+
+  for(i=0; i<5; i++){
+    var stageName = "stage";
+    stageName = stageName.concat(i.toString());
+    if(response.Data[stageName] != null){
+
+      var newStageData = JSON.parse(response.Data[stageName].Value);
       // Check if dispute is over and resolve it
       if(newStageData.lastDominated != null){
         var passed_hours = Date.hoursBetween(new Date(newStageData.lastDominated), new Date());
         if(passed_hours >= 2){
-          // TO TEST CLIENT TREATMENT
-          // newStageData.Resolve = newStageData.ownerId;
-
           newStageData.Resolve = handlers.resolveDispute({
              PlayFabId: args.PlayFabId,
              stageId: i,
@@ -213,12 +239,10 @@ handlers.getConquestDataForPlayer = function(args, context){
            }, context);
         }
       }
-
-      response.Data[stageName].Value = JSON.stringify(newStageData);
     }
   }
 
-  return response;
+  return "OK";
 }
 
 
