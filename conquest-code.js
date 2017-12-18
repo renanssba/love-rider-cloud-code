@@ -208,7 +208,7 @@ handlers.getConquestDataForPlayer = function(args, context){
 }
 
 
-handlers.resolveExpiredDisputes() = function(args, context){
+handlers.resolveExpiredDisputes = function(args, context){
   var response;
 
   if(args == null || args.PlayFabId == null){
