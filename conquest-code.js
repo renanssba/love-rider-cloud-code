@@ -242,7 +242,10 @@ handlers.resolveExpiredDisputes = function(args, context){
     }
   }
 
-  return "OK";
+  return {
+    msg: "Executed resolveExpiredDisputes. Time: ",
+    date: new Date()
+  });
 }
 
 
