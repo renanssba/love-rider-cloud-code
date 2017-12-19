@@ -209,7 +209,7 @@ handlers.getConquestDataForPlayer = function(args, context){
 
 
 handlers.resolveExpiredDisputes = function(args, context){
-  var response;
+  var userData;
   var playfabId;
 
   if(args == null || args.PlayFabId == null){
@@ -218,26 +218,27 @@ handlers.resolveExpiredDisputes = function(args, context){
     playfabId = args.PlayFabId;
   }
 
-  response = server.GetUserData({
+  userData = server.GetUserData({
     PlayFabId: playfabId
   });
 
   for(i=0; i<5; i++){
     var stageName = "stage";
     stageName = stageName.concat(i.toString());
-    if(response.Data[stageName] != null){
+    if(userData.Data[stageName] != null){
 
-      var newStageData = JSON.parse(response.Data[stageName].Value);
+      var newStageData = JSON.parse(userData.Data[stageName].Value);
       // Check if dispute is over and resolve it
       if(newStageData.lastDominated != null){
         var passed_hours = Date.hoursBetween(new Date(newStageData.lastDominated), new Date());
         if(passed_hours >= 2){
-          newStageData.Resolve = handlers.resolveDispute({
-             PlayFabId: playfabId,
-             stageId: i,
-             stageData: newStageData,
-             stageName: stageName
-           }, context);
+          handlers.resolveDispute({
+            PlayFabId: playfabId,
+            stageId: i,
+            stageData: newStageData,
+            stageName: stageName,
+            userData: userData
+          }, context);
         }
       }
     }
@@ -249,7 +250,7 @@ handlers.resolveExpiredDisputes = function(args, context){
 
 handlers.resolveDispute = function(args, context){
   if(args == null || args.PlayFabId == null || args.stageId == null ||
-     args.stageData == null || args.stageName == null){
+     args.stageData == null || args.stageName == null || args.userData == null){
     return {error: "INVALID_PARAMETERS"};
   }
   var originalOwnerId = args.PlayFabId;
@@ -268,6 +269,13 @@ handlers.resolveDispute = function(args, context){
     var requestData = {};
     requestData[args.stageName] = JSON.stringify(stageData);
 
+    requestData.conquestResolveMessages = handlers.conquestResolveMessage({
+      PlayFabId: args.stageData.contestantId,
+      stageName: args.stageName,
+      winnerId: winnerId,
+      userData: args.userData
+    }).conquestResolveMessages;
+
     server.UpdateUserData({
       PlayFabId: originalOwnerId,
       Data: requestData,
@@ -275,52 +283,41 @@ handlers.resolveDispute = function(args, context){
     });
     // resets all dispute data, instantiates clean stage
 
-    /// notify current invader
-    handlers.AddConquestResolveMessage({
-      PlayFabId: args.stageData.contestantId,
-      stageName: args.stageName,
-      winnerId: winnerId
-    });
-
   } else {
     // handlers.addScoreToConquestMode({playerId: args.stageData.ownerId, score: 100}, context);
     // Add one Invader Token item
     server.UpdateUserData({
       PlayFabId: args.PlayFabId,
+      Data: handlers.conquestResolveMessage({
+        stageName: args.stageName,
+        winnerId: winnerId,
+        userData: args.userData
+      }),
       KeysToRemove: new Array(args.stageName),
       Permission: "Public"
     });
     // cleans the stage itself
-
-    /// notify current invader
-    handlers.AddConquestResolveMessage({
-      PlayFabId: winnerId,
-      stageName: args.stageName,
-      winnerId: winnerId
-    });
   }
 
   /// notify original owner
-  handlers.AddConquestResolveMessage({
-    PlayFabId: originalOwnerId,
-    stageName: args.stageName,
-    winnerId: winnerId
-  });
+  // handlers.conquestResolveMessage({
+  //   PlayFabId: originalOwnerId,
+  //   stageName: args.stageName,
+  //   winnerId: winnerId,
+  //   userData: args.userData
+  // });
 
   return args.stageData.ownerId;
 }
 
-handlers.AddConquestResolveMessage = function(args, context){
-  if(args == null || args.PlayFabId == null || args.stageName == null ||
-     args.winnerId == null){
+handlers.conquestResolveMessage = function(args, context){
+  if(args == null || args.stageName == null ||
+     args.winnerId == null || args.userData == null){
     return {error: "INVALID_PARAMETERS"};
   }
 
   var resolveMessages;
-  var response;
-  response = server.GetUserData({
-    PlayFabId: args.PlayFabId
-  });
+  var response = args.userData;
 
   if(response.Data.conquestResolveMessages != null){
     resolveMessages = JSON.parse(response.Data.conquestResolveMessages.Value);
@@ -335,9 +332,5 @@ handlers.AddConquestResolveMessage = function(args, context){
   var requestData = {};
   requestData.conquestResolveMessages = JSON.stringify(resolveMessages);
 
-  server.UpdateUserData({
-    PlayFabId: args.PlayFabId,
-    Data: requestData,
-    Permission: "Public"
-  });
+  return requestData;
 }
