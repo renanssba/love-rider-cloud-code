@@ -210,16 +210,17 @@ handlers.getConquestDataForPlayer = function(args, context){
 
 handlers.resolveExpiredDisputes = function(args, context){
   var response;
+  var playfabId;
 
   if(args == null || args.PlayFabId == null){
-    response = server.GetUserData({
-      PlayFabId: currentPlayerId
-    });
+    playfabId = currentPlayerId;
   }else{
-    response = server.GetUserData({
-      PlayFabId: args.PlayFabId
-    });
+    playfabId = args.PlayFabId;
   }
+
+  response = server.GetUserData({
+    PlayFabId: playfabId
+  });
 
   for(i=0; i<5; i++){
     var stageName = "stage";
@@ -232,7 +233,7 @@ handlers.resolveExpiredDisputes = function(args, context){
         var passed_hours = Date.hoursBetween(new Date(newStageData.lastDominated), new Date());
         if(passed_hours >= 2){
           newStageData.Resolve = handlers.resolveDispute({
-             PlayFabId: args.PlayFabId,
+             PlayFabId: playfabId,
              stageId: i,
              stageData: newStageData,
              stageName: stageName
