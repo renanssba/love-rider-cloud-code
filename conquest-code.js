@@ -204,6 +204,15 @@ handlers.getConquestDataForPlayer = function(args, context){
     }
   }
 
+  // remove conquestResolveMessages when the are read
+  if(args.PlayFabId == currentPlayerId){
+    server.UpdateUserData({
+      PlayFabId: currentPlayerId,
+      KeysToRemove: new Array("conquestResolveMessages"),
+      Permission: "Public"
+    });
+  }
+
   return response;
 }
 
