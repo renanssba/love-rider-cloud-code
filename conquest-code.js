@@ -322,7 +322,7 @@ handlers.AddConquestResolveMessage = function(args, context){
   });
 
   if(response.Data.conquestResolveMessages != null){
-    resolveMessages = JSON.parse(response.conquestResolveMessages.Value);
+    resolveMessages = JSON.parse(response.Data.conquestResolveMessages.Value);
   } else {
     resolveMessages = {};
   }
