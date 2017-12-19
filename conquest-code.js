@@ -213,11 +213,11 @@ handlers.resolveExpiredDisputes = function(args, context){
 
   if(args == null || args.PlayFabId == null){
     response = server.GetUserData({
-      PlayFabId: args.PlayFabId
+      PlayFabId: currentPlayerId
     });
   }else{
     response = server.GetUserData({
-      PlayFabId: currentPlayerId
+      PlayFabId: args.PlayFabId
     });
   }
 
@@ -242,10 +242,7 @@ handlers.resolveExpiredDisputes = function(args, context){
     }
   }
 
-  return {
-    msg: "Executed resolveExpiredDisputes. Time: ",
-    date: new Date()
-  });
+  return "Executed resolveExpiredDisputes.";
 }
 
 
