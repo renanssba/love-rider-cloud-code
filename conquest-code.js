@@ -332,7 +332,7 @@ handlers.AddConquestResolveMessage = function(args, context){
   };
 
   var requestData = {};
-  requestData[args.stageName] = JSON.stringify(resolveMessages);
+  requestData.conquestResolveMessages = JSON.stringify(resolveMessages);
 
   server.UpdateUserData({
     PlayFabId: args.PlayFabId,
