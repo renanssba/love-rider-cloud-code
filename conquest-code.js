@@ -252,8 +252,9 @@ handlers.resolveDispute = function(args, context){
     return {error: "INVALID_PARAMETERS"};
   }
   var originalOwnerId = args.PlayFabId;
+  var winnerId = args.stageData.ownerId;
 
-  if(args.stageData.ownerId == originalOwnerId){
+  if(winnerId == originalOwnerId){
     handlers.addScoreToConquestMode({playerId: args.stageData.ownerId, score: 30}, context);
     // Add one Defender Token item
 
@@ -272,6 +273,14 @@ handlers.resolveDispute = function(args, context){
       Permission: "Public"
     });
     // resets all dispute data, instantiates clean stage
+
+    /// notify current invader
+    handlers.AddConquestResolveMessage({
+      PlayFabId: args.stageData.contestantId,
+      stageName: args.stageName,
+      winnerId: winnerId
+    });
+
   } else {
     // handlers.addScoreToConquestMode({playerId: args.stageData.ownerId, score: 100}, context);
     // Add one Invader Token item
@@ -281,7 +290,53 @@ handlers.resolveDispute = function(args, context){
       Permission: "Public"
     });
     // cleans the stage itself
+
+    /// notify current invader
+    handlers.AddConquestResolveMessage({
+      PlayFabId: winnerId,
+      stageName: args.stageName,
+      winnerId: winnerId
+    });
   }
 
+  /// notify original owner
+  handlers.AddConquestResolveMessage({
+    PlayFabId: originalOwnerId,
+    stageName: args.stageName,
+    winnerId: winnerId
+  });
+
   return args.stageData.ownerId;
+}
+
+handlers.AddConquestResolveMessage = function(args, context){
+  if(args == null || args.PlayFabId == null || args.stageName == null ||
+     args.winnerId == null){
+    return {error: "INVALID_PARAMETERS"};
+  }
+
+  var resolveMessages;
+  var response;
+  response = server.GetUserData({
+    PlayFabId: args.PlayFabId
+  });
+
+  if(response.Data.conquestResolveMessages != null){
+    resolveMessages = JSON.parse(response.conquestResolveMessages.Value);
+  } else {
+    resolveMessages = {};
+  }
+
+  resolveMessages[args.stageName] = {
+    winnerId: args.winnerId
+  };
+
+  var requestData = {};
+  requestData[args.stageName] = JSON.stringify(resolveMessages);
+
+  server.UpdateUserData({
+    PlayFabId: args.PlayFabId,
+    Data: requestData,
+    Permission: "Public"
+  });
 }
