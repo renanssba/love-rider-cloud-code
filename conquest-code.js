@@ -158,7 +158,7 @@ handlers.getConquestTargets = function(args, context){
   var response = server.GetLeaderboardAroundUser({
     PlayFabId: currentPlayerId,
     StatisticName: "Conquest Mode",
-    MaxResultsCount: 6
+    MaxResultsCount: 12
   });
 
   var countActiveStages = function(stageData){
@@ -173,22 +173,19 @@ handlers.getConquestTargets = function(args, context){
     return count;
   }
 
-  var i, playerIndex;
+  var i;
   var availablePlayers = {
     Leaderboard: []
   };
-  // var availablePlayers.Leaderboard = [];
   for(i=0; i<response.Leaderboard.length; i++){
     if(response.Leaderboard[i].PlayFabId != currentPlayerId &&
        countActiveStages(server.GetUserData({
          PlayFabId: response.Leaderboard[i].PlayFabId
        })) > 0){
-      // playerIndex = i;
       availablePlayers.Leaderboard.push(response.Leaderboard[i]);
       break;
     }
   }
-  // response.Leaderboard.splice(playerIndex, 1);
 
   return availablePlayers;
 }
