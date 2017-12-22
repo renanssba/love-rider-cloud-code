@@ -174,8 +174,10 @@ handlers.getConquestTargets = function(args, context){
   }
 
   var i, playerIndex;
-  var availablePlayers = {};
-  var availablePlayers.Leaderboard = [];
+  var availablePlayers = {
+    Leaderboard: []
+  };
+  // var availablePlayers.Leaderboard = [];
   for(i=0; i<response.Leaderboard.length; i++){
     if(response.Leaderboard[i].PlayFabId != currentPlayerId &&
        countActiveStages(server.GetUserData({
