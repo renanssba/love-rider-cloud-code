@@ -188,15 +188,14 @@ handlers.getConquestTargets = function(args, context){
     Leaderboard: []
   };
   for(i=0; i<response.Leaderboard.length; i++){
-    if(response.Leaderboard[i].PlayFabId != currentPlayerId &&
-       countActiveStages(server.GetUserData({
+    if(countActiveStages(server.GetUserData({
          PlayFabId: response.Leaderboard[i].PlayFabId
        })) > 0){
       availablePlayers.Leaderboard.push(response.Leaderboard[i]);
     }
   }
 
-  while(availablePlayers.Leaderboard.length > 7) {
+  while(availablePlayers.Leaderboard.length > 6) {
     var index = getCurrentPlayerIndex(availablePlayers, currentPlayerId);
     var length = availablePlayers.Leaderboard.length;
     if(index < length/2){
