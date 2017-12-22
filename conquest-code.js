@@ -276,7 +276,7 @@ handlers.resolveExpiredDisputes = function(args, context){
       // Check if dispute is over and resolve it
       if(newStageData.lastDominated != null){
         var passed_hours = Date.hoursBetween(new Date(newStageData.lastDominated), new Date());
-        if(passed_hours >= 2){
+        if(passed_hours >= 24){
           handlers.resolveDispute({
             PlayFabId: playfabId,
             stageId: i,
