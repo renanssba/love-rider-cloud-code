@@ -161,14 +161,32 @@ handlers.getConquestTargets = function(args, context){
     MaxResultsCount: 6
   });
 
+  var countActiveStages = function(stageData){
+    var i, count = 0;
+    for(i=0; i<6; i++){
+      var stageName = "stage";
+      stageName = stageName.concat(i.toString());
+      if(stageData.Data[stageName] != null){
+        count++;
+      }
+    }
+    return count;
+  }
+
   var i, playerIndex;
+  var availablePlayers;
+  var availablePlayers.Leaderboard = [];
   for(i=0; i<response.Leaderboard.length; i++){
-    if(response.Leaderboard[i].PlayFabId == currentPlayerId){
-      playerIndex = i;
+    if(response.Leaderboard[i].PlayFabId != currentPlayerId &&
+       countActiveStages(server.GetUserData({
+         PlayFabId: response.Leaderboard[i].PlayFabId
+       })) > 0){
+      // playerIndex = i;
+      availablePlayers.Leaderboard.push(response.Leaderboard[i]);
       break;
     }
   }
-  response.Leaderboard.splice(playerIndex, 1);
+  // response.Leaderboard.splice(playerIndex, 1);
 
   return response;
 }
