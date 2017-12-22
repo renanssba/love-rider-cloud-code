@@ -196,7 +196,7 @@ handlers.getConquestTargets = function(args, context){
     }
   }
 
-  while(availablePlayers.Leaderboard.length > 6) {
+  while(availablePlayers.Leaderboard.length > 7) {
     var index = getCurrentPlayerIndex(availablePlayers, currentPlayerId);
     var length = availablePlayers.Leaderboard.length;
     if(index < length/2){
