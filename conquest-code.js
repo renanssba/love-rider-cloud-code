@@ -176,7 +176,7 @@ handlers.getConquestTargets = function(args, context){
   var getCurrentPlayerIndex = function(availablePlayers, currentPlayerId){
     var i;
     for(i=0; i<availablePlayers.Leaderboard.length; i++){
-      if(availablePlayers.Leaderboard[i].PlayFabId == currentPlayerId{
+      if(availablePlayers.Leaderboard[i].PlayFabId == currentPlayerId){
         return i;
       }
     }
