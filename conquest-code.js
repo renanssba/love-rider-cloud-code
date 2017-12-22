@@ -173,6 +173,16 @@ handlers.getConquestTargets = function(args, context){
     return count;
   }
 
+  var getCurrentPlayerIndex = function(availablePlayers, currentPlayerId){
+    var i;
+    for(i=0; i<availablePlayers.Leaderboard.length; i++){
+      if(availablePlayers.Leaderboard[i].PlayFabId == currentPlayerId{
+        return i;
+      }
+    }
+    return -1;
+  }
+
   var i;
   var availablePlayers = {
     Leaderboard: []
@@ -185,6 +195,17 @@ handlers.getConquestTargets = function(args, context){
       availablePlayers.Leaderboard.push(response.Leaderboard[i]);
     }
   }
+
+  while(availablePlayers.Leaderboard.length > 6) {
+    var index = getCurrentPlayerIndex(availablePlayers, currentPlayerId);
+    var length = availablePlayers.Leaderboard.length;
+    if(index < length/2){
+      availablePlayers.Leaderboard.splice(length-1, 1);
+    }else {
+      availablePlayers.Leaderboard.splice(0, 1);
+    }
+  }
+  availablePlayers.Leaderboard.splice(getCurrentPlayerIndex(availablePlayers, currentPlayerId), 1);
 
   return availablePlayers;
 }
