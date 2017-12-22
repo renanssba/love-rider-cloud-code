@@ -183,7 +183,6 @@ handlers.getConquestTargets = function(args, context){
          PlayFabId: response.Leaderboard[i].PlayFabId
        })) > 0){
       availablePlayers.Leaderboard.push(response.Leaderboard[i]);
-      break;
     }
   }
 
