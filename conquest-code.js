@@ -190,7 +190,7 @@ handlers.getConquestTargets = function(args, context){
   }
   // response.Leaderboard.splice(playerIndex, 1);
 
-  return response;
+  return availablePlayers;
 }
 
 
